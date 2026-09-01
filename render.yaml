@@ -1,0 +1,53 @@
+# Render.com uchun sozlama.
+#
+# Render bu faylni repozitoriyadan o'qib, xizmatni o'zi yaratadi.
+# Maxfiy qiymatlar (`sync: false`) bu yerda EMAS — ularni Render
+# boshqaruv panelidagi Environment bo'limiga qo'lda yozasiz, shunda
+# ular GitHub ga hech qachon tushmaydi.
+
+services:
+  - type: web
+    name: compass-app
+    runtime: python
+    plan: free
+    region: frankfurt
+
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.api:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.7"
+
+      # Serverda bot polling emas, webhook bilan ishlaydi:
+      # Telegram yangilikni o'zi yuboradi va uxlab qolgan xizmatni uyg'otadi.
+      - key: USE_WEBHOOK
+        value: "true"
+
+      # Tunnel faqat lokal ishlash uchun kerak edi.
+      - key: TUNNEL
+        value: "none"
+
+      - key: ALLOW_INSECURE_DEV
+        value: "false"
+
+      - key: MENU_BUTTON_TEXT
+        value: "Open"
+
+      # --- Quyidagilarni Render panelida to'ldirasiz ---
+      # BOT_TOKEN     — @BotFather bergan token
+      # ADMIN_IDS     — admin Telegram ID lari (vergul bilan)
+      # DATABASE_URL  — Neon Postgres ulanish satri (bo'sh bo'lsa SQLite)
+      # ANTHROPIC_API_KEY — ixtiyoriy
+      #
+      # WEBAPP_URL yozilmaydi: Render o'z manzilini RENDER_EXTERNAL_URL
+      # orqali beradi va ilova uni avtomatik oladi.
+      - key: BOT_TOKEN
+        sync: false
+      - key: ADMIN_IDS
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false

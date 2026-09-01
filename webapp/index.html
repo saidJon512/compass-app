@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <title>Daraja aniqlash testi</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+
+<!-- ═══ Yuklanmoqda ═══ -->
+<section id="screen-splash" class="screen is-active">
+  <div class="splash">
+    <div class="spinner"></div>
+    <p class="hint">Ilova tayyorlanmoqda…</p>
+  </div>
+</section>
+
+<!-- ═══ Xatolik ═══ -->
+<section id="screen-error" class="screen">
+  <div class="splash">
+    <div class="big-emoji">⚠️</div>
+    <h1 class="title">Xatolik</h1>
+    <p id="error-text" class="hint"></p>
+  </div>
+  <footer class="footer">
+    <button id="error-retry" class="btn btn-primary">Qayta urinish</button>
+  </footer>
+</section>
+
+<!-- ═══ Bosh ekran ═══ -->
+<section id="screen-home" class="screen">
+  <div class="scroll">
+    <div class="hero">
+      <div class="hero-mark">🎯</div>
+      <h1 id="home-title" class="title">Daraja aniqlash testi</h1>
+      <p id="home-sub" class="hint">
+        Ingliz tili darajangizni aniqlaymiz — Beginner'dan Advanced'gacha.
+      </p>
+    </div>
+
+    <div class="ladder ladder-static" id="home-ladder"></div>
+
+    <ul class="facts">
+      <li><span class="fact-ico">①</span><div><b>Beginner darajadan boshlanadi</b><br><span class="hint">Har kim bir xil joydan boshlaydi.</span></div></li>
+      <li><span class="fact-ico">②</span><div><b>Har 5 savoldan keyin moslashadi</b><br><span class="hint">Daraja bir pog'ona ko'tariladi yoki pasayadi — hech qachon sakramaydi.</span></div></li>
+      <li><span class="fact-ico">③</span><div><b>Odatda 10–20 savol</b><br><span class="hint">Aniq darajangiz topilishi bilan test to'xtaydi.</span></div></li>
+    </ul>
+
+    <div id="last-result-card" class="card card-tap hidden">
+      <div class="lr-left">
+        <div id="lr-level" class="lr-badge">Elem</div>
+      </div>
+      <div class="lr-body">
+        <b>Oxirgi natijangiz</b>
+        <span id="lr-meta" class="hint"></span>
+      </div>
+      <span class="chevron">›</span>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <button id="start-btn" class="btn btn-primary">Testni boshlash</button>
+    <button id="resume-btn" class="btn btn-ghost hidden">Yarim qolgan testni davom ettirish</button>
+    <button id="admin-btn" class="btn btn-ghost hidden">📊 Natijalar (admin)</button>
+  </footer>
+</section>
+
+<!-- ═══ Admin: natijalar ═══ -->
+<section id="screen-admin" class="screen">
+  <div class="scroll">
+    <h1 class="title">Natijalar</h1>
+    <p id="admin-totals" class="hint"></p>
+
+    <h3 class="section-label">Darajalar bo'yicha</h3>
+    <div id="admin-levels" class="blocks"></div>
+
+    <h3 class="section-label">Oxirgi topshirganlar</h3>
+    <div id="admin-list" class="admin-list"></div>
+  </div>
+
+  <footer class="footer">
+    <button id="admin-back" class="btn btn-primary">Orqaga</button>
+  </footer>
+</section>
+
+<!-- ═══ Test ═══ -->
+<section id="screen-quiz" class="screen">
+  <header class="quiz-head">
+    <div class="ladder" id="quiz-ladder"></div>
+    <div class="block-dots" id="block-dots"></div>
+  </header>
+
+  <div class="scroll" id="quiz-scroll">
+    <div class="qmeta">
+      <span id="skill-tag" class="tag"></span>
+      <span id="qcount" class="hint small"></span>
+    </div>
+
+    <p id="passage" class="passage hidden"></p>
+    <h2 id="question" class="question"></h2>
+    <p id="sentence" class="sentence hidden"></p>
+
+    <div id="options" class="options"></div>
+
+    <div id="free-wrap" class="hidden">
+      <textarea id="free-text" rows="7" spellcheck="false"
+                placeholder="Javobingizni ingliz tilida yozing…"></textarea>
+      <p id="word-count" class="hint small"></p>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <button id="submit-btn" class="btn btn-primary" disabled>Davom etish</button>
+  </footer>
+</section>
+
+<!-- ═══ Natija ═══ -->
+<section id="screen-result" class="screen">
+  <div class="scroll">
+    <div class="result-hero">
+      <div id="result-badge" class="result-badge">Elementary</div>
+      <p class="hint">Sizning ingliz tili darajangiz</p>
+    </div>
+
+    <div class="ladder ladder-static" id="result-ladder"></div>
+
+    <div class="card">
+      <p id="summary" class="summary"></p>
+    </div>
+
+    <h3 class="section-label">Bosqichlar bo'yicha</h3>
+    <div id="blocks" class="blocks"></div>
+
+    <p class="hint small centered" id="result-foot"></p>
+  </div>
+
+  <footer class="footer">
+    <button id="close-btn" class="btn btn-primary">Yopish</button>
+    <button id="retake-btn" class="btn btn-ghost">Testni qayta topshirish</button>
+  </footer>
+</section>
+
+<!-- ═══ Daraja o'zgarishi (overlay) ═══ -->
+<div id="levelup" class="levelup">
+  <div class="levelup-inner">
+    <div id="lu-icon" class="lu-icon">↑</div>
+    <div class="lu-jump">
+      <span id="lu-from" class="lu-from">Beginner</span>
+      <span id="lu-arrow" class="lu-arrow">↓</span>
+      <span id="lu-to" class="lu-to">Elementary</span>
+    </div>
+    <p id="lu-text" class="lu-text"></p>
+  </div>
+</div>
+
+<script src="/assets/app.js"></script>
+</body>
+</html>
